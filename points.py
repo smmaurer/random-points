@@ -59,7 +59,7 @@ def reproject(geom, in_epsg, out_epsg):
 id = 1
 output = []
 
-while id <= 10:
+while id <= 100:
     
     # Generate a random point inside the bounding box
     p = Point(rand(a, b), rand(c, d))
@@ -69,14 +69,17 @@ while id <= 10:
         
         # Convert the coordinates from meters to lon-lat
         p = reproject(p, 3488, 4326)  # WGS84 unprojected - https://epsg.io/4326 
-        output.append([id, p.x, p.y])
+        
+        # Generate URL for Google Maps
+        url = 'http://maps.google.com?t=k&q=' + str(p.y) + ',' + str(p.x)
+        
+        output.append([id, p.x, p.y, url])
         id += 1
 
 
-print output
+# Save the output data
+df = pd.DataFrame(output, columns=['id','lon','lat','url']).set_index('id')
+df.to_csv('output/random_points.csv')
 
-# Save id, lat/lon, link to Google
 
-
-# Save as CSV and as GeoJSON
 
